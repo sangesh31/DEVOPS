@@ -1,0 +1,13 @@
+trigger:
+- main
+
+pool:
+  name: 'My-machine'
+
+steps:
+
+- script: mvn clean compile
+  displayName: Compile Code
+
+- script: mvn test
+  displayName: Run Regression Tests
