@@ -1,0 +1,12 @@
+trigger:
+- main
+
+pool:
+  name: 'my-machine'
+
+steps:
+- script: mvn clean package
+  displayName: 'Build Java Project'
+
+- script: echo "Build completed successfully"
+  displayName: 'Build Status'
