@@ -1,0 +1,13 @@
+trigger:
+- main
+
+pool:
+  name: 'my-machine'   # Your self-hosted pool
+
+steps:
+- script: |
+    mvnd clean compile
+  displayName: 'Build with Maven Daemon'
+
+- script: echo "Build completed successfully on $(ComputerName) at $(date)"
+  displayName: 'Build Status'
