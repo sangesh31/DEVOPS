@@ -1,20 +1,35 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
 - main
 
+pr:
+- main
+
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest'   # ⚠️ needs parallelism OR use self-hosted
 
 steps:
+
+# 📥 Checkout code
 - checkout: self
 
+# ☕ Install Java (CORRECT TASK)
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '11'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+# 📦 Build + Run Regression Tests
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean test'
+    options: '-Xmx3072m'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+# 📊 Publish Test Results
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+  condition: succeededOrFailed()
